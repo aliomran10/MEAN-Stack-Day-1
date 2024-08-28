@@ -1,30 +1,18 @@
-import { Request, Response, NextFunction } from "express"
-import categoryModel from "../models/categoryModel"
-import asyncHandler from "express-async-handler";
+import subCategoriesModel from "../models/subCategoryModel";
+import { createOne, deleteOne, getAll, getOne, updateOne } from "./refactorHandler";
+import { NextFunction, Request, Response } from "express";
 import { SubCategories } from "../Interfaces/subCategories";
-import subCategoryModel from "../models/subCategoryModel";
+import { FilterData } from "../Interfaces/filterData";
 
-export const createSubCategory = asyncHandler(async(req:Request, res:Response, next:NextFunction) => {
-    const subCategory:SubCategories = await subCategoryModel.create(req.body);
-    res.status(201).json({data: subCategory})
-})
+export const filterData = (req: Request, res: Response, next: NextFunction) => {
+    let filterData: FilterData = {};
+    if (req.params.categoryId) { filterData.category = req.params.categoryId };
+    req.filterData = filterData;
+    next();
+}
 
-export const getSubCategories = asyncHandler(async(req:Request, res:Response, next:NextFunction) => {
-    const subCategories = await subCategoryModel.find();
-    res.status(200).json({data:subCategories});
-})
-
-export const getSubCategory = asyncHandler(async(req:Request, res:Response, next:NextFunction) => {
-    const subCategory = await subCategoryModel.findById(req.params.id);
-    res.status(200).json({data: subCategory})
-})
-
-export const updateSubCategory = asyncHandler(async(req:Request, res:Response, next:NextFunction) => {
-    const subCategory = await subCategoryModel.findByIdAndUpdate(req.params.id, req.body, {new:true});
-    res.status(200).json({data:subCategory})
-})
-
-export const deleteSubCategory = asyncHandler(async(req:Request, res:Response, next:NextFunction) => {
-    const subCategory = await subCategoryModel.findByIdAndDelete(req.params.id);
-    res.status(204).json();
-})
+export const createSubcategory = createOne<SubCategories>(subCategoriesModel)
+export const getSubcategories = getAll<SubCategories>(subCategoriesModel, 'subcategories')
+export const getSubcategory = getOne<SubCategories>(subCategoriesModel)
+export const updateSubcategory = updateOne<SubCategories>(subCategoriesModel)
+export const deleteSubcategory = deleteOne<SubCategories>(subCategoriesModel)
