@@ -3,6 +3,9 @@ import { createOne, deleteOne, getAll, getOne, updateOne } from "./refactorHandl
 import { NextFunction, Request, Response } from "express";
 import { SubCategories } from "../Interfaces/subCategories";
 import { FilterData } from "../Interfaces/filterData";
+import sharp from "sharp";
+import asyncHandler from 'express-async-handler';
+import { uploadSingleImage } from "../middleware/uploadImages";
 
 export const filterData = (req: Request, res: Response, next: NextFunction) => {
     let filterData: FilterData = {};
@@ -11,8 +14,25 @@ export const filterData = (req: Request, res: Response, next: NextFunction) => {
     next();
 }
 
+export const setCategoryId = (req: Request, res: Response, next: NextFunction) => {
+    if (!req.body.category) { req.body.category = req.params.categoryId };
+    next();
+};
+
 export const createSubcategory = createOne<SubCategories>(subCategoriesModel)
 export const getSubcategories = getAll<SubCategories>(subCategoriesModel, 'subcategories')
 export const getSubcategory = getOne<SubCategories>(subCategoriesModel)
 export const updateSubcategory = updateOne<SubCategories>(subCategoriesModel)
 export const deleteSubcategory = deleteOne<SubCategories>(subCategoriesModel)
+export const uploadSubcategoryImage = uploadSingleImage('image');
+export const resizeSubcategoryImage = asyncHandler(async (req, res, next) => {
+    if (req.file) {
+        const imageName: string = `subcategory-${Date.now()}.jpeg`
+        await sharp(req.file.buffer)
+        .toFormat('jpeg')
+        .jpeg({ quality: 95 })
+        .toFile(`uploads/subcategories/${imageName}`)
+        req.body.image = imageName;
+    }
+    next();
+});

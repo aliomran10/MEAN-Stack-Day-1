@@ -15,7 +15,9 @@ const productsSchema: Schema = new Schema<Products>({
     images: [String],
     category: { type: Schema.Types.ObjectId, required: true, ref: 'categories' },
     subcategory: { type: Schema.Types.ObjectId, required: true, ref: 'subcategories' }
-}, { timestamps: true });
+}, { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } });
+
+productsSchema.virtual('reviews', { ref: 'reviews', foreignField: 'product', localField: '_id' })
 
 productsSchema.pre<Products>(/^find/, function (next) {
     this.populate({ path: 'category', select: 'name' })

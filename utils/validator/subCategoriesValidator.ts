@@ -1,38 +1,38 @@
 import { RequestHandler } from "express";
 import { check } from "express-validator";
-import categoryModel from "../../models/categoryModel";
 import validatorMiddleware from "../../middleware/validatorMiddleware";
-
+import categoriesModel from "../../models/categoryModel";
 
 export const createSubcategoryValidator: RequestHandler[] = [
     check('name')
-    .notEmpty().withMessage('Subcategory Name is Required')
-    .isLength({ min: 2, max: 50 }).withMessage('Name length must be between 2 and 50'),
+        .notEmpty().withMessage('Subcategory Name is Required')
+        .isLength({ min: 2, max: 50 }).withMessage('Name length must be between 2 and 50'),
     check('category')
-    .notEmpty().withMessage('Category is Required')
-    .isMongoId().withMessage('Invalid Mongo Id')
-    .custom(async (val) => {
-        const category = await categoryModel.findById(val);
+        .notEmpty().withMessage('Category is Required')
+        .isMongoId().withMessage('Invalid Mongo Id')
+        // * Check if category exist
+        .custom(async (val) => {
+        const category = await categoriesModel.findById(val);
         if (!category) {
             throw new Error('Category Not Found');
         }
         return true;
-    }),
+        }),
     validatorMiddleware
 ]
 
 export const updateSubcategoryValidator: RequestHandler[] = [
     check('name').optional()
-    .isLength({ min: 2, max: 50 }).withMessage('Name length must be between 2 and 50'),
+        .isLength({ min: 2, max: 50 }).withMessage('Name length must be between 2 and 50'),
     check('category').optional()
-    .isMongoId().withMessage('Invalid Mongo Id')
-    .custom(async (val) => {
-        const category = await categoryModel.findById(val);
+        .isMongoId().withMessage('Invalid Mongo Id')
+        .custom(async (val) => {
+        const category = await categoriesModel.findById(val);
         if (!category) {
-        throw new Error('Category Not Found');
+            throw new Error('Category Not Found');
         }
         return true;
-    }),
+        }),
     validatorMiddleware
 ]
 

@@ -1,34 +1,33 @@
 import { RequestHandler } from "express";
 import { check } from "express-validator";
+import validatorMiddleware from "../../middleware/validatorMiddleware";
 import subCategoriesModel from "../../models/subCategoryModel";
 import { SubCategories } from "../../Interfaces/subCategories";
-import validatorMiddleware from "../../middleware/validatorMiddleware";
-
 
 export const createCategoryValidator: RequestHandler[] = [
-    check('name')
+  check('name')
     .notEmpty().withMessage('Category Name is Required')
     .isLength({ min: 2, max: 50 }).withMessage('Name length must be between 2 and 50'),
-    validatorMiddleware
+  validatorMiddleware
 ]
 
 export const updateCategoryValidator: RequestHandler[] = [
-    check('name')
+  check('name')
     .notEmpty().withMessage('Category Name is Required')
     .isLength({ min: 2, max: 50 }).withMessage('Name length must be between 2 and 50'),
-    validatorMiddleware
+  validatorMiddleware
 ]
 
 export const getCategoryValidator: RequestHandler[] = [
-    check('id').isMongoId().withMessage('Invalid Mongo Id'),
-    validatorMiddleware
+  check('id').isMongoId().withMessage('Invalid Mongo Id'),
+  validatorMiddleware
 ]
 
 export const deleteCategoryValidator: RequestHandler[] = [
-    check('id').isMongoId().withMessage('Invalid Mongo Id')
+  check('id').isMongoId().withMessage('Invalid Mongo Id')
     .custom(async (val) => {
-        const subcategories = await subCategoriesModel.find({ category: val });
-        if (subcategories.length > 0) {
+      const subcategories = await subCategoriesModel.find({ category: val });
+      if (subcategories.length > 0) {
         const bulkOption = subcategories.map((subcategory: SubCategories) => ({
           deleteOne: { filter: { _id: subcategory._id } }
         }))
