@@ -22,6 +22,7 @@ export const updateUser = asyncHandler(async (req: Request, res: Response, next:
     res.status(200).json({ data: user, message: 'user updated successfully' })
 });
 export const deleteUser = deleteOne<Users>(usersModel)
+
 export const uploadUserImage = uploadSingleImage('image');
 export const resizeUserImage = asyncHandler(async (req, res, next) => {
     if (req.file) {
