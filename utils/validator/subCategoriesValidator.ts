@@ -6,7 +6,7 @@ import categoriesModel from "../../models/categoryModel";
 export const createSubcategoryValidator: RequestHandler[] = [
     check('name')
         .notEmpty().withMessage('Subcategory Name is Required')
-        .isLength({ min: 2, max: 50 }).withMessage('Name length must be between 2 and 50'),
+        .isLength({ min: 2, max: 50 }).withMessage('Name length must be between 2 and 50 characters'),
     check('category')
         .notEmpty().withMessage('Category is Required')
         .isMongoId().withMessage('Invalid Mongo Id')

@@ -40,8 +40,8 @@ export const changeUserPassword = asyncHandler(async (req: Request, res: Respons
         password: await bcrypt.hash(req.body.password, 13),
         passwordChangedAt: Date.now()
     }, { new: true })
-    if (!user) { return next(new ApiErrors('user not found', 404)) }
-    res.status(200).json({ message: 'user password changed successfully', data: user })
+    if (!user) { return next(new ApiErrors('User not found', 404)) }
+    res.status(200).json({ message: 'User password changed successfully', data: user })
 });
 
 export const setLoggedUserId = asyncHandler((req: Request, res: Response, next: NextFunction) => {
@@ -53,7 +53,7 @@ export const updateLoggedUser = asyncHandler(async (req: Request, res: Response,
         name: req.body.name,
         image: req.body.image,
     }, { new: true })
-    res.status(200).json({ data: user, message: 'user updated successfully' })
+    res.status(200).json({ data: user, message: 'User updated Successfully' })
 })
 export const changeLoggedUserPassword = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     const user = await usersModel.findByIdAndUpdate(req.user?.id, {
@@ -61,5 +61,5 @@ export const changeLoggedUserPassword = asyncHandler(async (req: Request, res: R
         passwordChangedAt: Date.now()
     }, { new: true })
     const token: string = createToken(user?._id)
-    res.status(200).json({ message: 'password changed successfully', token })
+    res.status(200).json({ message: 'Password changed Successfully', token })
 });

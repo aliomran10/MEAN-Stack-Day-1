@@ -7,14 +7,14 @@ import { SubCategories } from "../../Interfaces/subCategories";
 
 export const createProductValidator: RequestHandler[] = [
     check('name')
-        .notEmpty().withMessage('Subcategory Name is Required')
-        .isLength({ min: 2, max: 50 }).withMessage('Name length must be between 2 and 50'),
+        .notEmpty().withMessage('Subcategory name is Required')
+        .isLength({ min: 2, max: 50 }).withMessage('Name length must be between 2 and 50 characters'),
     check('description')
-        .notEmpty().withMessage('description required')
+        .notEmpty().withMessage('Description required')
         .isLength({ min: 10, max: 500 }),
     check('price')
-        .notEmpty().withMessage('Product Price required')
-        .isNumeric().withMessage('price must be number').toFloat()
+        .notEmpty().withMessage('Product price required')
+        .isNumeric().withMessage('Price must be number').toFloat()
         .custom((val: number) => {
         if (val <= 0 || val > 1000000) {
             throw new Error('Invalid Price')
@@ -22,7 +22,7 @@ export const createProductValidator: RequestHandler[] = [
         return true
         }),
     check('priceAfterDiscount').optional()
-        .isNumeric().withMessage('price must be number').toFloat()
+        .isNumeric().withMessage('Price must be number').toFloat()
         .custom((val: number) => {
         if (val <= 0 || val > 1000000) {
             throw new Error('Invalid Price')
@@ -30,7 +30,7 @@ export const createProductValidator: RequestHandler[] = [
         return true
         }),
     check('quantity').optional()
-        .isNumeric().withMessage('price must be number').toInt()
+        .isNumeric().withMessage('Price must be number').toInt()
         .custom((val: number) => {
         if (val < 0) {
             throw new Error('Invalid Quantity')
@@ -49,7 +49,7 @@ export const createProductValidator: RequestHandler[] = [
         return true;
         }),
     check('subcategory')
-        .notEmpty().withMessage('subcategory is Required')
+        .notEmpty().withMessage('Subcategory is Required')
         .isMongoId().withMessage('Invalid Mongo Id')
         // * Check if subcategory exist
         .custom(async (val, { req }) => {
@@ -58,7 +58,7 @@ export const createProductValidator: RequestHandler[] = [
             throw new Error('Subcategory Not Found');
         }
         if (subcategory.category._id!.toString() !== req.body.category.toString()) {
-            throw new Error('subcategory not exist in category')
+            throw new Error('Subcategory does not exist in category')
         }
         return true;
         }),
@@ -68,13 +68,13 @@ export const createProductValidator: RequestHandler[] = [
 export const updateProductValidator: RequestHandler[] = [
     check('name')
         .optional()
-        .isLength({ min: 2, max: 50 }).withMessage('Name length must be between 2 and 50'),
+        .isLength({ min: 2, max: 50 }).withMessage('Name length must be between 2 and 50 characters'),
     check('description')
         .optional()
         .isLength({ min: 10, max: 500 }),
     check('price')
         .optional()
-        .isNumeric().withMessage('price must be number').toFloat()
+        .isNumeric().withMessage('Price must be number').toFloat()
         .custom((val: number) => {
         if (val <= 0 || val > 1000000) {
             throw new Error('Invalid Price')
@@ -82,7 +82,7 @@ export const updateProductValidator: RequestHandler[] = [
         return true
         }),
     check('priceAfterDiscount').optional()
-        .isNumeric().withMessage('price must be number').toFloat()
+        .isNumeric().withMessage('Price must be number').toFloat()
         .custom((val: number) => {
         if (val <= 0 || val > 1000000) {
             throw new Error('Invalid Price')
@@ -90,7 +90,7 @@ export const updateProductValidator: RequestHandler[] = [
         return true
         }),
     check('quantity').optional()
-        .isNumeric().withMessage('price must be number').toInt()
+        .isNumeric().withMessage('Price must be number').toInt()
         .custom((val: number) => {
         if (val < 0) {
             throw new Error('Invalid Quantity')
@@ -118,7 +118,7 @@ export const updateProductValidator: RequestHandler[] = [
             throw new Error('Subcategory Not Found');
         }
         if (subcategory.category._id!.toString() !== req.body.category.toString()) {
-            throw new Error('subcategory not exist in category')
+            throw new Error('Subcategory not exist in category')
         }
         return true;
         }),
@@ -133,4 +133,4 @@ export const getProductValidator: RequestHandler[] = [
 export const deleteProductValidator: RequestHandler[] = [
     check('id').isMongoId().withMessage('Invalid Mongo Id'),
     validatorMiddleware
-    ]
+]

@@ -9,18 +9,18 @@ export const createCouponValidator: RequestHandler[] = [
         .isLength({ min: 2, max: 50 }).withMessage('Name length must be between 2 and 50')
         .custom(async (val: string) => {
         const coupon = await couponsModel.findOne({ name: val });
-        if (coupon) { throw new Error('coupon name already exist') }
+        if (coupon) { throw new Error('Coupon name already exist') }
         return true;
         }),
     check('expireTime')
-        .notEmpty().withMessage('coupon expire time required')
+        .notEmpty().withMessage('Coupon expire time required')
         .isDate().withMessage('Invalid Date'),
     check('discount')
         .notEmpty().withMessage('Discount required')
         .isNumeric().withMessage('Discount must be a number')
         .custom((val) => {
         if (val <= 0 || val > 100) {
-            throw new Error('invalid Discount value')
+            throw new Error('Invalid Discount value')
         }
         return true;
         }),

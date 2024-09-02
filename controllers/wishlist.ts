@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
 import usersModel from '../models/usersModel';
-import { getOne } from './refactorHandler';
 
 export const addProductToWishlist = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     const user = await usersModel.findByIdAndUpdate(req.user?._id, {

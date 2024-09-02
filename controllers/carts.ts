@@ -6,20 +6,18 @@ import productsModel from '../models/productsModel';
 import { CartProducts, Carts } from '../Interfaces/carts';
 import couponsModel from '../models/couponsModel';
 
-// Get user cart
 export const getLoggedUserCart = asyncHandler(async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const cart = await cartsModel.findOne({ user: req.user?._id });
   if (!cart) {
-    return next(new ApiErrors("this user don't have cart yet", 404))
+    return next(new ApiErrors("This user don't have cart yet", 404))
   };
   res.status(200).json({ length: cart.cartItems.length, data: cart });
 });
 
-// Add product to cart
 export const addProductToCart = asyncHandler(async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const product = await productsModel.findById(req.body.product);
   if (!product) {
-    return next(new ApiErrors('Product Not found', 404))
+    return next(new ApiErrors('Product not found', 404))
   }
   let cart: any = await cartsModel.findOne({ user: req.user?._id });
   if (!cart) {
@@ -42,7 +40,6 @@ export const addProductToCart = asyncHandler(async (req: Request, res: Response,
   res.status(200).json({ length: cart.cartItems.length, data: cart });
 });
 
-// remove product from cart
 export const removeProduct = asyncHandler(async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const cart: any = await cartsModel.findOneAndUpdate({ user: req.user?._id }, {
     $pull: { cartItems: { _id: req.params.itemId } }
@@ -52,28 +49,26 @@ export const removeProduct = asyncHandler(async (req: Request, res: Response, ne
   res.status(200).json({ length: cart.cartItems.length, data: cart });
 });
 
-// update product quantity
 export const updateProductQuantity = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
   const cart = await cartsModel.findOne({ user: req.user?._id });
-  if (!cart) { return next(new ApiErrors("this user don't have cart yet", 404)) }
+  if (!cart) { return next(new ApiErrors("This user don't have cart yet", 404)) }
   const productIndex = cart.cartItems.findIndex((item: CartProducts) => item._id!.toString() === req.params.itemId.toString());
   if (productIndex > -1) {
     cart.cartItems[productIndex].quantity = req.body.quantity;
     calcTotalPrice(cart);
   } else {
-    return next(new ApiErrors("product not found in cart", 404))
+    return next(new ApiErrors("Product not found in cart", 404))
   }
   await cart.save();
   res.status(200).json({ length: cart.cartItems.length, data: cart });
 });
 
-// Apply coupon
 export const applyCoupon = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
   const coupon = await couponsModel.findOne({
     name: req.body.name,
     expireTime: { $gt: Date.now() }
   });
-  if (!coupon) { return next(new ApiErrors('invalid or expired coupon', 400)) }
+  if (!coupon) { return next(new ApiErrors('Invalid or Expired Coupon', 400)) }
   const cart: any = await cartsModel.findOne({ user: req.user?._id });
   const totalPrice: number = cart.totalPrice;
   const totalPriceAfterDiscount = (totalPrice - (totalPrice * (coupon.discount / 100))).toFixed(2);
@@ -82,13 +77,11 @@ export const applyCoupon = asyncHandler(async (req: Request, res: Response, next
   res.status(200).json({ length: cart.cartItems.length, data: cart });
 });
 
-// clear cart
 export const clearCart = asyncHandler(async (req: Request, res: Response): Promise<void> => {
   await cartsModel.findOneAndDelete({ user: req.user?._id });
   res.status(204).json();
 });
 
-// calc total cart price
 const calcTotalPrice = (cart: Carts): number => {
   let totalPrice: number = 0;
   cart.cartItems.forEach((item: CartProducts) => {
