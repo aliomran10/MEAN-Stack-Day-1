@@ -5,23 +5,23 @@ import bcrypt from 'bcryptjs';
 import Jwt from 'jsonwebtoken';
 import { Users } from '../Interfaces/users';
 import usersModel from '../models/usersModel';
+import ApiErrors from '../utils/apiError';
 import { createResetToken, createToken } from '../utils/createToken';
 import sendMail from '../utils/sendMail';
-import ApiErrors from '../utils/apiError';
 
 export const signup = asyncHandler(async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const user: Users = await usersModel.create(req.body);
-  const token = createToken(user._id);
+  const token = createToken(user._id, user.role);
   res.status(201).json({ token, data: user })
 });
 
 export const login = asyncHandler(async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const user = await usersModel.findOne({ email: req.body.email });
   if (!user || !(await bcrypt.compare(req.body.password, user.password))) {
-    return next(new ApiErrors('Invalid Email or Password', 401));
+    return next(new ApiErrors('Invalid email or password', 401));
   }
-  const token = createToken(user._id);
-  res.status(200).json({ token, message: 'Logged in Successfully' });
+  const token = createToken(user._id, user.role);
+  res.status(200).json({ token, message: 'logged in successfully' });
 });
 
 export const protectRoutes = asyncHandler(async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -29,16 +29,16 @@ export const protectRoutes = asyncHandler(async (req: Request, res: Response, ne
   let token: string = '';
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
     token = req.headers.authorization.split(' ')[1];
-  } else { return next(new ApiErrors('Login first to access the application', 401)) }
+  } else { return next(new ApiErrors('login first to access the application', 401)) }
   // 2- check if token not expired
   const decodedToken: any = Jwt.verify(token, process.env.JWT_SECRET_KEY!);
   // 3- check if user exist
   const currentUser = await usersModel.findById(decodedToken._id);
-  if (!currentUser) { return next(new ApiErrors("User doesn't exist", 401)) }
+  if (!currentUser) { return next(new ApiErrors("user doesn't exist", 401)) }
   // 4- check if password changed
   if (currentUser.passwordChangedAt instanceof Date) {
-    const changedPasswordTime: number = (currentUser.passwordChangedAt.getTime() / 1000);
-    if (changedPasswordTime > decodedToken.iat) { return next(new ApiErrors('Please login again', 401)) }
+    const changedPasswordTime: number = parseInt((currentUser.passwordChangedAt.getTime() / 1000).toString());
+    if (changedPasswordTime > decodedToken.iat) { return next(new ApiErrors('please login again', 401)) }
   }
   req.user = currentUser;
   next();
@@ -75,7 +75,7 @@ export const verifyResetCode = asyncHandler(async (req: Request, res: Response, 
     resetCode: hashedResetCode,
     resetCodeExpireTime: { $gt: Date.now() }
   })
-  if (!user) { return next(new ApiErrors('Invalid or expired reset code', 400)) };
+  if (!user) { return next(new ApiErrors('Invalid or Expired reset code', 400)) };
   user.resetCodeVerify = true;
   await user.save({ validateModifiedOnly: true });
   res.status(200).json({ message: 'Reset code verified' });
@@ -85,7 +85,7 @@ export const resetCode = asyncHandler(async (req: Request, res: Response, next: 
   let resetToken: string = '';
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
     resetToken = req.headers.authorization.split(' ')[1];
-  } else { return next(new ApiErrors("You can't perform this action", 400)) }
+  } else { return next(new ApiErrors("You can't do this action", 400)) }
   const decodedToken: any = Jwt.verify(resetToken, process.env.JWT_SECRET_KEY!);
   const user = await usersModel.findOne({
     _id: decodedToken._id,
@@ -98,11 +98,11 @@ export const resetCode = asyncHandler(async (req: Request, res: Response, next: 
   user.resetCodeVerify = undefined;
   user.passwordChangedAt = Date.now();
   await user.save({ validateModifiedOnly: true });
-  res.status(200).json({message:'Your password has been changed'});
+  res.status(200).json({ message: 'Your password has been changed' });
 });
 
 export const allowedTo = (...roles: string[]) => asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-  if (!(roles.includes(req.user?.role ?? ''))) {
+  if (!(roles.includes(req.user?.role!))) {
     return next(new ApiErrors("You can't access this", 403))
   }
   next();

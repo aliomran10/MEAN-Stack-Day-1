@@ -7,12 +7,12 @@ const productsRoute: Router = Router();
 productsRoute.use('/:productId/reviews', reviewsRoute);
 
 productsRoute.route('/')
-.get(getProducts)
-.post(protectRoutes, checkActive, allowedTo('manager', 'admin'), uploadProductImages, resizeImages, createProductValidator, createProduct);
+  .get(getProducts)
+  .post(protectRoutes, checkActive, allowedTo('manager', 'admin'), uploadProductImages, resizeImages, createProductValidator, createProduct);
 
 productsRoute.route('/:id')
-.get(getProductValidator, getProduct)
-.put(protectRoutes, checkActive, allowedTo('manager', 'admin'), updateProductValidator, updateProduct)
-.delete(protectRoutes, checkActive, allowedTo('manager', 'admin'), deleteProductValidator, deleteProduct);
+  .get(getProductValidator, getProduct)
+  .put(protectRoutes, checkActive, allowedTo('manager', 'admin'), updateProductValidator, updateProduct)
+  .delete(protectRoutes, checkActive, allowedTo('manager', 'admin'), deleteProductValidator, deleteProduct);
 
 export default productsRoute;

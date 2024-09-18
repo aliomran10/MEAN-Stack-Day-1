@@ -5,12 +5,14 @@ import { createReviewValidator, deleteReviewValidator, getReviewValidator, updat
 const reviewsRoute: Router = Router({ mergeParams: true });
 
 reviewsRoute.route('/')
-.get(filterReviews, getReviews)
-.post(protectRoutes, checkActive, allowedTo('user'), setProductAndUserId, createReviewValidator, createReview);
+  .get(filterReviews, getReviews)
+  .post(protectRoutes, checkActive, allowedTo('user'), setProductAndUserId, createReviewValidator, createReview);
+
+reviewsRoute.route('/myReviews').get(protectRoutes, checkActive, allowedTo('user'), filterReviews, getReviews);
 
 reviewsRoute.route('/:id')
-.get(getReviewValidator, getReview)
-.put(protectRoutes, checkActive, allowedTo('user'), updateReviewValidator, updateReview)
-.delete(protectRoutes, checkActive, allowedTo('manager', 'admin', 'user'), deleteReviewValidator, deleteReview);
+  .get(getReviewValidator, getReview)
+  .put(protectRoutes, checkActive, allowedTo('user'), updateReviewValidator, updateReview)
+  .delete(protectRoutes, checkActive, allowedTo('manager', 'admin', 'user'), deleteReviewValidator, deleteReview);
 
 export default reviewsRoute;

@@ -7,9 +7,9 @@ const wishlistRoute: Router = Router();
 wishlistRoute.use(protectRoutes, checkActive, allowedTo('user'))
 
 wishlistRoute.route('/')
-.get(getLoggedUserWishlist)
-.post(addProductToWishlist)
+  .get(getLoggedUserWishlist)
+  .post(addProductToWishlist)
 wishlistRoute.route('/:product')
-.delete(removeProductFromWishlist)
+  .delete(removeProductFromWishlist)
 
 export default wishlistRoute;

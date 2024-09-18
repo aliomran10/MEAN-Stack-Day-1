@@ -2,7 +2,7 @@ import { Schema, model } from "mongoose";
 import { SubCategories } from "../Interfaces/subCategories";
 
 const subCategoriesSchema: Schema = new Schema<SubCategories>({
-  name: { type: String, required: true, trim: true, unique: true },
+  name: { type: String, required: true, trim: true },
   image: String,
   category: { type: Schema.Types.ObjectId, required: true, ref: 'categories' }
 }, { timestamps: true });

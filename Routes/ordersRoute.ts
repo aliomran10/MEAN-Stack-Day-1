@@ -7,8 +7,8 @@ const ordersRoute: Router = Router();
 ordersRoute.use(protectRoutes, checkActive)
 
 ordersRoute.route('/')
-.get(filterOrders, getOrders)
-.post(allowedTo('user'), createOrderValidator, createOrder);
+  .get(filterOrders, getOrders)
+  .post(allowedTo('user'), createOrderValidator, createOrder);
 
 ordersRoute.route('/:id').get(getOrderValidator, getOrder)
 

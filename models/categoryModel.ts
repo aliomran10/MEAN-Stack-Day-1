@@ -1,9 +1,9 @@
-import { Categories } from '../Interfaces/categories';
-import {Schema, model} from 'mongoose';
+import { Schema, model } from "mongoose";
+import { Categories } from "../Interfaces/categories";
 
-
-const categoriesSchema:Schema = new Schema<Categories>({
-    name: {type: String, required: true, trim: true, unique: true}
-},{timestamps: true});
+const categoriesSchema: Schema = new Schema<Categories>({
+  name: { type: String, required: true, trim: true, unique: true },
+  image: String,
+}, { timestamps: true });
 
 export default model<Categories>('categories', categoriesSchema)

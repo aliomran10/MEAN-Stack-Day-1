@@ -7,14 +7,14 @@ const cartsRoute: Router = Router();
 cartsRoute.use(protectRoutes, checkActive, allowedTo('user'))
 
 cartsRoute.route('/')
-.get(getLoggedUserCart)
-.post(addProductToCartValidator, addProductToCart)
-.delete(clearCart);
+  .get(getLoggedUserCart)
+  .post(addProductToCartValidator, addProductToCart)
+  .delete(clearCart);
 
 cartsRoute.put('/applyCoupon', applyCoupon)
 
-cartsRoute.route('/:itemId')
-.put(updateProductQuantityValidator, updateProductQuantity)
-.delete(removeProductFromCartValidator, removeProduct);
+cartsRoute.route('/:itemId') // TODO: item id is belong to object id
+  .put(updateProductQuantityValidator, updateProductQuantity)
+  .delete(removeProductFromCartValidator, removeProduct);
 
 export default cartsRoute;

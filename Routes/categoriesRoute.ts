@@ -9,12 +9,12 @@ const categoriesRoute: Router = Router();
 categoriesRoute.use('/:categoryId/subcategories', subcategoriesRoute);
 
 categoriesRoute.route('/')
-.get(getCategories)
-.post(protectRoutes, checkActive, allowedTo('manager', 'admin'), uploadCategoryImage, resizeCategoryImage, createCategoryValidator, createCategory);
+  .get(getCategories)
+  .post(protectRoutes, checkActive, allowedTo('manager', 'admin'), uploadCategoryImage, resizeCategoryImage, createCategoryValidator, createCategory);
 
 categoriesRoute.route('/:id')
-.get(getCategoryValidator, getCategory)
-.put(protectRoutes, checkActive, allowedTo('manager', 'admin'), uploadCategoryImage, resizeCategoryImage, updateCategoryValidator, updateCategory)
-.delete(protectRoutes, checkActive, allowedTo('manager', 'admin'), deleteCategoryValidator, deleteCategory);
+  .get(getCategoryValidator, getCategory)
+  .put(protectRoutes, checkActive, allowedTo('manager', 'admin'), uploadCategoryImage, resizeCategoryImage, updateCategoryValidator, updateCategory)
+  .delete(protectRoutes, checkActive, allowedTo('manager', 'admin'), deleteCategoryValidator, deleteCategory);
 
 export default categoriesRoute;
