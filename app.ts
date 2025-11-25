@@ -47,6 +47,10 @@ const i18n = new I18n({
   directory: path.join(__dirname, "locales"),
   defaultLocale: "en",
   queryParameter: "lang",
+
+  // 🚫 Prevent writing on serverless filesystem
+  updateFiles: false,
+  syncFiles: false,
 });
 app.use(i18n.init);
 
