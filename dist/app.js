@@ -40,6 +40,9 @@ const i18n = new i18n_1.I18n({
     directory: path_1.default.join(__dirname, "locales"),
     defaultLocale: "en",
     queryParameter: "lang",
+    // 🚫 Prevent writing on serverless filesystem
+    updateFiles: false,
+    syncFiles: false,
 });
 app.use(i18n.init);
 // Routes
