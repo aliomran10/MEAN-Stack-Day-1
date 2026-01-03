@@ -24,6 +24,7 @@ app.use(
       "http://localhost:4200",
       "https://project.nti.giize.com",
       "https://nti-e-commerce-front-end.vercel.app/home",
+      "https://e-commerce-frontend-mu-fawn.vercel.app/products",
     ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
