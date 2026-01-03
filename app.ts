@@ -12,30 +12,28 @@ import mountRoutes from "./Routes";
 
 dotenv.config();
 
-// Create app
 const app: express.Application = express();
 
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      const allowedOrigins = [
-        "http://localhost:4200",
-        "https://e-commerce-frontend-mu-fawn.vercel.app",
-      ];
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
-  })
-);
+const corsOptions = {
+  origin: function (origin: string | undefined, callback: Function) {
+    const allowedOrigins = [
+      "http://localhost:4200",
+      "https://e-commerce-frontend-mu-fawn.vercel.app",
+    ];
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(null, false);
+    }
+  },
+  credentials: true,
+};
 
-// Middlewares
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
+
 app.use(express.json({ limit: "10kb" }));
-
 app.use(compression());
 app.use(mongoSanitize());
 app.use(
@@ -43,32 +41,25 @@ app.use(
     whitelist: ["price", "category", "subcategory", "ratingAverage", "sold"],
   })
 );
-
 app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
 app.use(express.static("uploads"));
 
-// Connect DB
 database();
 
-// i18n
 const i18n = new I18n({
   locales: ["en", "ar"],
   directory: path.join(__dirname, "locales"),
   defaultLocale: "en",
   queryParameter: "lang",
-
-  // 🚫 Prevent writing on serverless filesystem
   updateFiles: false,
   syncFiles: false,
 });
 app.use(i18n.init);
 
-// Routes
 mountRoutes(app);
 
-// Export for Vercel serverless function
-module.exports = app;
 export default app;
+module.exports = app;
 
 // import { Server } from "http";
 // import path from "path";
