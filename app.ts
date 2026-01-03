@@ -28,7 +28,6 @@ app.use((req, res, next) => {
 app.use(cors());
 app.options("*", cors());
 
-
 // const corsOptions = {
 //   origin: function (origin: string | undefined, callback: Function) {
 //     const allowedOrigins = [
@@ -55,6 +54,7 @@ app.options("*", cors());
 
 // app.options("*", cors());
 
+// Body parser
 app.use(express.json({ limit: "10kb" }));
 app.use(compression());
 app.use(mongoSanitize());
@@ -63,6 +63,11 @@ app.use(
     whitelist: ["price", "category", "subcategory", "ratingAverage", "sold"],
   })
 );
+
+// Serve static files from public folder
+app.use("/products", express.static(path.join(__dirname, "uploads/products")));
+app.use("/users", express.static(path.join(__dirname, "uploads/users")));
+
 // app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
 app.use(express.static("uploads"));
 
