@@ -14,6 +14,21 @@ dotenv.config();
 
 const app: express.Application = express();
 
+// FORCE CORS HEADERS (Vercel-safe)
+app.use((req, res, next) => {
+  res.header(
+    "Access-Control-Allow-Origin",
+    "https://e-commerce-frontend-mu-fawn.vercel.app"
+  );
+  res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  next();
+});
+
+app.use(cors());
+app.options("*", cors());
+
+
 // const corsOptions = {
 //   origin: function (origin: string | undefined, callback: Function) {
 //     const allowedOrigins = [
@@ -30,15 +45,15 @@ const app: express.Application = express();
 //   credentials: true,
 // };
 
-app.use(
-  cors({
-    origin: "*",
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+// app.use(
+//   cors({
+//     origin: "*",
+//     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+//     allowedHeaders: ["Content-Type", "Authorization"],
+//   })
+// );
 
-app.options("*", cors());
+// app.options("*", cors());
 
 app.use(express.json({ limit: "10kb" }));
 app.use(compression());
@@ -48,7 +63,7 @@ app.use(
     whitelist: ["price", "category", "subcategory", "ratingAverage", "sold"],
   })
 );
-app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
+// app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
 app.use(express.static("uploads"));
 
 database();
