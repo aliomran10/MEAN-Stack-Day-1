@@ -14,24 +14,31 @@ dotenv.config();
 
 const app: express.Application = express();
 
-const corsOptions = {
-  origin: function (origin: string | undefined, callback: Function) {
-    const allowedOrigins = [
-      "http://localhost:4200",
-      "https://e-commerce-frontend-mu-fawn.vercel.app",
-    ];
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(null, false);
-    }
-  },
-  credentials: true,
-};
+// const corsOptions = {
+//   origin: function (origin: string | undefined, callback: Function) {
+//     const allowedOrigins = [
+//       "http://localhost:4200",
+//       "https://e-commerce-frontend-mu-fawn.vercel.app",
+//     ];
+//     if (!origin) return callback(null, true);
+//     if (allowedOrigins.includes(origin)) {
+//       callback(null, true);
+//     } else {
+//       callback(null, false);
+//     }
+//   },
+//   credentials: true,
+// };
 
-app.use(cors(corsOptions));
-app.options("*", cors(corsOptions));
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
+
+app.options("*", cors());
 
 app.use(express.json({ limit: "10kb" }));
 app.use(compression());
