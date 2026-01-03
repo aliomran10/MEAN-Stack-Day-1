@@ -55,8 +55,8 @@ app.use((0, hpp_1.default)({
     whitelist: ["price", "category", "subcategory", "ratingAverage", "sold"],
 }));
 // Serve static files from public folder
-app.use("/products", express_1.default.static(path_1.default.join(__dirname, "uploads/products")));
-app.use("/users", express_1.default.static(path_1.default.join(__dirname, "uploads/users")));
+app.use('/products', express_1.default.static(path_1.default.join(__dirname, 'public/products')));
+app.use('/users', express_1.default.static(path_1.default.join(__dirname, 'public/users')));
 // app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
 app.use(express_1.default.static("uploads"));
 (0, database_1.default)();

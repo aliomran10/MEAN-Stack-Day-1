@@ -28,6 +28,7 @@ app.use((req, res, next) => {
 app.use(cors());
 app.options("*", cors());
 
+
 // const corsOptions = {
 //   origin: function (origin: string | undefined, callback: Function) {
 //     const allowedOrigins = [
@@ -65,8 +66,8 @@ app.use(
 );
 
 // Serve static files from public folder
-app.use("/products", express.static(path.join(__dirname, "uploads/products")));
-app.use("/users", express.static(path.join(__dirname, "uploads/users")));
+app.use('/products', express.static(path.join(__dirname, 'public/products')));
+app.use('/users', express.static(path.join(__dirname, 'public/users')));
 
 // app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
 app.use(express.static("uploads"));
