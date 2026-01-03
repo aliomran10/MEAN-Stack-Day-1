@@ -15,22 +15,26 @@ dotenv.config();
 // Create app
 const app: express.Application = express();
 
-// Middlewares
-app.use(express.json({ limit: "10kb" }));
-
 app.use(
   cors({
-    origin: [
-      "http://localhost:4200",
-      "https://project.nti.giize.com",
-      "https://nti-e-commerce-front-end.vercel.app/home",
-      "https://e-commerce-frontend-mu-fawn.vercel.app",
-    ],
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    origin: function (origin, callback) {
+      const allowedOrigins = [
+        "http://localhost:4200",
+        "https://e-commerce-frontend-mu-fawn.vercel.app",
+      ];
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
 );
+
+// Middlewares
+app.use(express.json({ limit: "10kb" }));
 
 app.use(compression());
 app.use(mongoSanitize());
